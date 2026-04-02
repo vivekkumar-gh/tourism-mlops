@@ -49,7 +49,7 @@ for fname in ["X_train.csv", "X_test.csv", "y_train.csv", "y_test.csv"]:
     )
     # Copy to working dir
     import shutil
-    shutil.copy(local_p, f"tourism_project/data/{fname}")
+    shutil.copy(local_p, f"tourism/data/{fname}")
 
 X_train = pd.read_csv("tourism/data/X_train.csv")
 X_test  = pd.read_csv("tourism/data/X_test.csv")
