@@ -28,13 +28,13 @@ jobs:
           python-version: "3.10"
 
       - name: Install Dependencies
-        run: pip install -r tourism_project/requirements.txt
+        run: pip install -r tourism/requirements.txt
 
       - name: Register Dataset on Hugging Face
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
           HF_USERNAME: ${{ secrets.HF_USERNAME }}
-        run: python tourism_project/model_building/data_register.py
+        run: python tourism/model_building/data_register.py
 
   # ── JOB 2: Clean, encode, scale and split the dataset ─────────────────────
   prepare-data:
@@ -52,13 +52,13 @@ jobs:
           python-version: "3.10"
 
       - name: Install Dependencies
-        run: pip install -r tourism_project/requirements.txt
+        run: pip install -r tourism/requirements.txt
 
       - name: Run Data Preparation
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
           HF_USERNAME: ${{ secrets.HF_USERNAME }}
-        run: python tourism_project/model_building/prep.py
+        run: python tourism/model_building/prep.py
 
   # ── JOB 3: Train models, track with MLflow, push best model to HF ─────────
   train-model:
@@ -76,14 +76,14 @@ jobs:
           python-version: "3.10"
 
       - name: Install Dependencies
-        run: pip install -r tourism_project/requirements.txt
+        run: pip install -r tourism/requirements.txt
 
       - name: Train Model with MLflow Tracking
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
           HF_USERNAME: ${{ secrets.HF_USERNAME }}
           MLFLOW_TRACKING_URI: ./mlruns
-        run: python tourism_project/model_building/train.py
+        run: python tourism/model_building/train.py
 
   # ── JOB 4: Upload Streamlit app to Hugging Face Spaces ────────────────────
   deploy:
@@ -101,10 +101,10 @@ jobs:
           python-version: "3.10"
 
       - name: Install Dependencies
-        run: pip install -r tourism_project/requirements.txt
+        run: pip install -r tourism/requirements.txt
 
       - name: Deploy App to Hugging Face Spaces
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
           HF_USERNAME: ${{ secrets.HF_USERNAME }}
-        run: python tourism_project/hosting/hosting.py
+        run: python tourism/hosting/hosting.py
