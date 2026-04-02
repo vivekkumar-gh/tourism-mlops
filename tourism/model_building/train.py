@@ -51,10 +51,10 @@ for fname in ["X_train.csv", "X_test.csv", "y_train.csv", "y_test.csv"]:
     import shutil
     shutil.copy(local_p, f"tourism_project/data/{fname}")
 
-X_train = pd.read_csv("tourism_project/data/X_train.csv")
-X_test  = pd.read_csv("tourism_project/data/X_test.csv")
-y_train = pd.read_csv("tourism_project/data/y_train.csv").squeeze()
-y_test  = pd.read_csv("tourism_project/data/y_test.csv").squeeze()
+X_train = pd.read_csv("tourism/data/X_train.csv")
+X_test  = pd.read_csv("tourism/data/X_test.csv")
+y_train = pd.read_csv("tourism/data/y_train.csv").squeeze()
+y_test  = pd.read_csv("tourism/data/y_test.csv").squeeze()
 print(f"Data loaded: {X_train.shape[0]} train, {X_test.shape[0]} test samples.")
 
 
