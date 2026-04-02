@@ -1,0 +1,110 @@
+name: Tourism  Pipeline
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Triggers on every push to the main branch.
+# The four jobs run in sequence: register → prepare → train → deploy
+# ─────────────────────────────────────────────────────────────────────────────
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main # ← PR into main also triggers it
+
+jobs:
+  # ── JOB 1: Upload raw data to Hugging Face Dataset Hub ─────────────────────
+  register-dataset:
+    name: "1 · Register Dataset"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Install Dependencies
+        run: pip install -r tourism_project/requirements.txt
+
+      - name: Register Dataset on Hugging Face
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          HF_USERNAME: ${{ secrets.HF_USERNAME }}
+        run: python tourism_project/model_building/data_register.py
+
+  # ── JOB 2: Clean, encode, scale and split the dataset ─────────────────────
+  prepare-data:
+    name: "2 · Prepare Data"
+    runs-on: ubuntu-latest
+    needs: register-dataset
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Install Dependencies
+        run: pip install -r tourism_project/requirements.txt
+
+      - name: Run Data Preparation
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          HF_USERNAME: ${{ secrets.HF_USERNAME }}
+        run: python tourism_project/model_building/prep.py
+
+  # ── JOB 3: Train models, track with MLflow, push best model to HF ─────────
+  train-model:
+    name: "3 · Train & Register Model"
+    runs-on: ubuntu-latest
+    needs: prepare-data
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Install Dependencies
+        run: pip install -r tourism_project/requirements.txt
+
+      - name: Train Model with MLflow Tracking
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          HF_USERNAME: ${{ secrets.HF_USERNAME }}
+          MLFLOW_TRACKING_URI: ./mlruns
+        run: python tourism_project/model_building/train.py
+
+  # ── JOB 4: Upload Streamlit app to Hugging Face Spaces ────────────────────
+  deploy:
+    name: "4 · Deploy to Hugging Face Spaces"
+    runs-on: ubuntu-latest
+    needs: train-model
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Install Dependencies
+        run: pip install -r tourism_project/requirements.txt
+
+      - name: Deploy App to Hugging Face Spaces
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          HF_USERNAME: ${{ secrets.HF_USERNAME }}
+        run: python tourism_project/hosting/hosting.py
