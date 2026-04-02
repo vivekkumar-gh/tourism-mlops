@@ -15,7 +15,6 @@ DATA_FILE = "tourism.csv"  # Local file to be uploaded
 
 # ── INITIALISE API ─────────────────────────────────────────────────────────────
 # Create API client with authentication token from environment variables
-os.environ["HF_TOKEN"] = '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'
 api = HfApi(token=os.getenv("HF_TOKEN"))
 print(os.getenv("HF_TOKEN"))
 
