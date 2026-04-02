@@ -36,7 +36,7 @@ MODEL_FNAME   = "best_tourism_model_v1.joblib"  # Filename for the saved model
 
 # ── MLFLOW SETUP ──────────────────────────────────────────────────────────────
 mlflow.set_tracking_uri(MLFLOW_URI)  # Configure MLflow to use the specified tracking server
-mlflow.set_experiment("Tourism_Wellness_Pipeline")  # Set the experiment name for tracking
+mlflow.set_experiment("Tourism_Pipeline")  # Set the experiment name for tracking
 
 # ── LOAD DATA FROM HUGGING FACE ───────────────────────────────────────────────
 print("Loading processed data from Hugging Face...")
